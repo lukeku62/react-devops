@@ -39,35 +39,25 @@ jobs:
         run: npm run test
   deploy:
     needs: test
-    
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
-
-    environment:
-      name: production
-      url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: ubuntu-latest
-
-    steps: 
-      - name: checkout repo
+    steps:
+      - name: Check out repository code
         uses: actions/checkout@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: use node.js
+
+      - name: Setup node
         uses: actions/setup-node@v3
         with:
-          node-version: '18.x'
+          node-version: 18.x
 
-      - name: Build and Deploy
-        run: |
-          npm install
-          npm run build
-          git config --global user.email 'github-actions@github.com'
-          git config --global user.name 'github-actions'
-          git remote set-url origin https://$ { { secrets.PAT }}@github.com/lukeku62/react-devops.git
-          npx gh-pages -d dist
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
 
