@@ -62,19 +62,12 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: configure github pages
-        uses: actions/configure-pages@v3
-        with:
-          static_site_generator: react
-          
-      - run: npm install
-      - run: npm run build
+      - name: Build and Deploy
+        run: |
+          npm install
+          npm run build
+          git config --global user.email 'github-actions@github.com'
+          git config --global user.name 'github-actions'
+          git remote set-url origin https://$ { { secrets.PAT }}@github.com/lukeku62/react-devops.git
+          npx gh-pages -d dist
 
-      - name: upload artifacts
-        uses: actions/upload-pages-artifact@v1
-        with: 
-          path: "./dist"
-
-      - name: deploy
-        id: deployment
-        uses: actions/deploy-pages@v1
