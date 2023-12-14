@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - development
-jobs: 
+jobs:
   build:
     runs-on: macos-latest
     steps:
@@ -14,10 +14,10 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      
+
       - name: Install dependencies
         run: npm install
-      
+
       - name: Build app
         run: npm run build
   test:
@@ -31,9 +31,26 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      
+
       - name: Install dependencies
         run: npm install
-      
+
       - name: Test app
         run: npm run test
+  serve:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Test app
+        run: npm run dev
